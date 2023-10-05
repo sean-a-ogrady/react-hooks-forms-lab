@@ -5,21 +5,26 @@ import Item from "./Item";
 
 function ShoppingList({ items }) {
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [query, setQuery] = useState("");
 
   function handleCategoryChange(event) {
     setSelectedCategory(event.target.value);
   }
 
-  const itemsToDisplay = items.filter((item) => {
-    if (selectedCategory === "All") return true;
+  function handleQueryChange(event) {
+    setQuery(event.target.value);
+  }
 
-    return item.category === selectedCategory;
+  const itemsToDisplay = items.filter((item) => {
+    if (selectedCategory === "All" || item.category === selectedCategory){
+      if (item.name.toLowerCase().startsWith(query.toLowerCase())) return true;
+    }
   });
 
   return (
     <div className="ShoppingList">
       <ItemForm />
-      <Filter onCategoryChange={handleCategoryChange} />
+      <Filter onCategoryChange={handleCategoryChange} onQueryChange={handleQueryChange} />
       <ul className="Items">
         {itemsToDisplay.map((item) => (
           <Item key={item.id} name={item.name} category={item.category} />
