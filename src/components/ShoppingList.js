@@ -2,11 +2,18 @@ import React, { useState } from "react";
 import ItemForm from "./ItemForm";
 import Filter from "./Filter";
 import Item from "./Item";
+import { v4 as uuid } from "uuid";
 
 function ShoppingList({ items }) {
+  // STATE
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [query, setQuery] = useState("");
+  const [newItemName, setNewItemName] = useState("");
+  const [newItemCategory, setNewItemCategory] = useState("Produce");
+  // items becomes dynamic, so it must use state
+  const [itemsProp, setItems] = useState([...items]);
 
+  // STATE HANDLERS
   function handleCategoryChange(event) {
     setSelectedCategory(event.target.value);
   }
@@ -15,15 +22,38 @@ function ShoppingList({ items }) {
     setQuery(event.target.value);
   }
 
-  const itemsToDisplay = items.filter((item) => {
-    if (selectedCategory === "All" || item.category === selectedCategory){
+  function onNewNameChange(event) {
+    setNewItemName(event.target.value);
+  }
+
+  function onNewCategoryChange(event) {
+    setNewItemCategory(event.target.value);
+  }
+  
+  function onItemFormSubmit(event) {
+    event.preventDefault();
+    setItems([...itemsProp, {
+      id: uuid(),
+      name: newItemName,
+      category: newItemCategory
+    }])
+  }
+
+  const itemsToDisplay = itemsProp.filter((item) => {
+    if (selectedCategory === "All" || item.category === selectedCategory) {
       if (item.name.toLowerCase().startsWith(query.toLowerCase())) return true;
     }
   });
 
   return (
-    <div className="ShoppingList">
-      <ItemForm />
+    <div className="ShoppingList" >
+      <ItemForm
+        newItemName={newItemName}
+        newItemCategory={newItemCategory}
+        onNewNameChange={onNewNameChange}
+        onNewCategoryChange={onNewCategoryChange}
+        onItemFormSubmit={onItemFormSubmit}
+        />
       <Filter onCategoryChange={handleCategoryChange} onQueryChange={handleQueryChange} />
       <ul className="Items">
         {itemsToDisplay.map((item) => (
