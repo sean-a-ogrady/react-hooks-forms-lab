@@ -12,6 +12,7 @@ function ShoppingList({ items }) {
   const [newItemCategory, setNewItemCategory] = useState("Produce");
   // items becomes dynamic, so it must use state
   const [itemsProp, setItems] = useState([...items]);
+  //const [newItem, setNewitem] = useState({ id: 0, name: "", category: ""})
 
   // STATE HANDLERS
   function handleCategoryChange(event) {
@@ -41,7 +42,11 @@ function ShoppingList({ items }) {
 
   const itemsToDisplay = itemsProp.filter((item) => {
     if (selectedCategory === "All" || item.category === selectedCategory) {
-      if (item.name.toLowerCase().startsWith(query.toLowerCase())) return true;
+      for (const word of item.name.toLowerCase().split(" ")){
+        if (word.startsWith(query.toLowerCase())) return true;
+      }
+      return false;
+      // if (item.name.toLowerCase().split(" ")) //.startsWith(query.toLowerCase())) return true;
     }
   });
 
